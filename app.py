@@ -21,7 +21,7 @@ def main():
         if selected_chart == 'Preferred Language':
             language_options = df['Student Preferred Language'].unique().tolist()
             selected_languages = st.multiselect('Select preferred languages', options=language_options, default=language_options)
-        elif selected_chart in ['Program Types', 'Students by Program and Period', 'Students by Program and Age']:
+        elif selected_chart in ['Program Types', 'Students by Program and Period', 'Students by Program and Age', 'Income by Program and Year']:
             program_options = df['Product Name'].unique().tolist()
             selected_programs = st.multiselect('Select programs', options=program_options, default=program_options)
         if selected_chart == 'Students by Program and Period':
@@ -41,6 +41,8 @@ def main():
         fig = chart_function(df_filtered, selected_periods, selected_programs)
     elif selected_chart == 'Students by Program and Age':
         fig = chart_function(df_filtered, selected_years, selected_programs, age_range)
+    elif selected_chart == 'Income by Program and Year':
+        fig = chart_function(df_filtered, selected_years, selected_programs)
     else:
         fig = chart_function(df_filtered)
 
