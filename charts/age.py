@@ -12,11 +12,11 @@ def plot_students_by_program_and_age(df, selected_years, selected_programs):
         df = df[df['Product Name'].isin(selected_programs)]
 
     # Group by 'Educational Year', 'Age', and 'Product Name'
-    summary = df.groupby(['Educational Year', 'Age', 'Product Name'])['StudentID'].nunique().reset_index(
+    summary = df.groupby(['Educational Year', 'Student Age', 'Product Name'])['StudentID'].nunique().reset_index(
         name='Number of Students')
 
     fig = px.bar(summary, x='Educational Year', y='Number of Students', color='Product Name', barmode='stack',
                  title='Number of Students in Different Types of Programs Depending on Year and Age',
-                 facet_col='Age', category_orders={"Age": sorted(df['Age'].unique())})
+                 facet_col='Student Age', category_orders={"Student Age": sorted(df['Student Age'].unique())})
 
     return fig
