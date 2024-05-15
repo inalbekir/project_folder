@@ -1,4 +1,4 @@
-# /project_folder/charts/period.py
+# /project_folder/charts/courses.py
 import pandas as pd
 import plotly.express as px
 
