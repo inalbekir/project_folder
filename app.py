@@ -14,21 +14,20 @@ def main():
         year_options = df['Educational Year'].unique().tolist()
         selected_years = st.multiselect("Select Educational Years", options=year_options, default=year_options)
 
-        # Filters specific to each chart type
-        selected_languages = selected_programs = selected_periods = []
-        age_range = [df['Student Age'].min(), df['Student Age'].max()]
+        # Initialize variables to store selected items
+        selected_languages = []
+        selected_programs = []
+        selected_periods = []
 
         if selected_chart == 'Preferred Language':
             language_options = df['Student Preferred Language'].unique().tolist()
-            selected_languages = st.multiselect('Select preferred languages', options=language_options, default=language_options)
-        elif selected_chart in ['Program Types', 'Students by Program and Period', 'Students by Program and Age', 'Income by Program and Year']:
+            selected_languages = st.multiselect('Select preferred languages', language_options, default=language_options)
+        elif selected_chart == 'Program Types' or selected_chart == 'Students by Program and Period':
             program_options = df['Product Name'].unique().tolist()
-            selected_programs = st.multiselect('Select programs', options=program_options, default=program_options)
+            selected_programs = st.multiselect('Select programs', program_options, default=program_options)
         if selected_chart == 'Students by Program and Period':
             period_options = df['Period'].unique().tolist()
-            selected_periods = st.multiselect('Select periods', options=period_options, default=period_options)
-        if selected_chart == 'Students by Program and Age':
-            age_range = st.slider('Select age range', min_value=int(df['Student Age'].min()), max_value=int(df['Student Age'].max()), value=(int(df['Student Age'].min()), int(df['Student Age'].max())))
+            selected_periods = st.multiselect('Select periods', period_options, default=period_options)
 
     df_filtered = df[df['Educational Year'].isin(selected_years)]
 
@@ -39,10 +38,6 @@ def main():
         fig = chart_function(df_filtered, selected_programs)
     elif selected_chart == 'Students by Program and Period':
         fig = chart_function(df_filtered, selected_periods, selected_programs)
-    elif selected_chart == 'Students by Program and Age':
-        fig = chart_function(df_filtered, selected_years, selected_programs, age_range)
-    elif selected_chart == 'Income by Program and Year':
-        fig = chart_function(df_filtered, selected_years, selected_programs)
     else:
         fig = chart_function(df_filtered)
 
