@@ -43,6 +43,8 @@ def main():
         fig = chart_function(df_filtered, selected_years, selected_programs, age_range)
     elif selected_chart == 'Income by Program and Year':
         fig = chart_function(df_filtered, selected_years, selected_programs)
+    elif selected_chart == 'Student Heatmap':
+        fig = chart_function(df_filtered, selected_years)
     elif selected_chart == 'How Did You Find Us' or selected_chart == 'Parent Occupation':
         fig = chart_function(df_filtered)
     else:
