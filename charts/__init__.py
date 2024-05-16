@@ -7,7 +7,7 @@ from .age import plot_students_by_program_and_age
 from .income import plot_income_by_program_and_year
 from .pie import plot_how_students_found_us
 from .donut import plot_parent_occupation
-from .heatmap import plot_student_heatmap  # Add the import for the new chart
+from .heatmap import plot_student_heatmap
 
 CHARTS = {
     'Student Enrollment': plot_students_per_year,
@@ -18,5 +18,5 @@ CHARTS = {
     'Income by Program and Year': plot_income_by_program_and_year,
     'How Did You Find Us': plot_how_students_found_us,
     'Parent Occupation': plot_parent_occupation,
-    'Student Heatmap': plot_student_heatmap  # Add this line for the new chart
+    'Student Heatmap': plot_student_heatmap
 }
