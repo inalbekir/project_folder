@@ -5,7 +5,7 @@ from charts import CHARTS
 
 def main():
     st.title("Student Data Visualization")
-    df = pd.read_csv('data/updated_coderminds.csv')
+    df = pd.read_csv('data/updated_coderminds.csv', on_bad_lines="skip")
 
     with st.sidebar:
         selected_chart = st.selectbox("Select a chart to display", options=list(CHARTS.keys()))

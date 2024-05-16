@@ -1,38 +1,35 @@
-# /project_folder/charts/heatmap.py
 import pandas as pd
 import plotly.express as px
 from geopy.geocoders import Nominatim
-from geopy.extra.rate_limiter import RateLimiter
+import streamlit as st
 
+# Function to load data
+@st.cache
+def load_data(file_path):
+    return pd.read_csv(file_path)
 
-def plot_student_heatmap(df, selected_years):
-    # Filter by selected educational years
-    df_filtered = df[df['Educational Year'].isin(selected_years)]
+# Function to get latitude and longitude
+@st.cache
+def get_lat_lon(postcode):
+    geolocator = Nominatim(user_agent="geoapiExercises")
+    try:
+        location = geolocator.geocode(postcode)
+        return location.latitude, location.longitude
+    except:
+        return None, None
 
-    # Initialize geolocator
-    geolocator = Nominatim(user_agent="student_heatmap")
-    geocode = RateLimiter(geolocator.geocode, min_delay_seconds=1)
+# Function to create heatmap
+def plot_student_heatmap(df):
+    # Aggregate the data by PostCodes
+    postcode_counts = df['PostCodes'].value_counts().reset_index()
+    postcode_counts.columns = ['PostCodes', 'Number of Students']
 
-    # Convert postcodes to coordinates
-    df_filtered['Coordinates'] = df_filtered['PostCodes'].apply(lambda x: geocode(str(x)))
-    df_filtered = df_filtered.dropna(subset=['Coordinates'])
-    df_filtered['Latitude'] = df_filtered['Coordinates'].apply(lambda loc: loc.latitude if loc else None)
-    df_filtered['Longitude'] = df_filtered['Coordinates'].apply(lambda loc: loc.longitude if loc else None)
-
-    # Group by latitude and longitude to count the number of students
-    summary = df_filtered.groupby(['Latitude', 'Longitude']).size().reset_index(name='Number of Students')
-
-    # Create the heatmap
-    fig = px.density_mapbox(
-        summary,
-        lat='Latitude',
-        lon='Longitude',
-        z='Number of Students',
-        radius=10,
-        center=dict(lat=52.1326, lon=5.2913),  # Center on the Netherlands
-        zoom=7,
-        mapbox_style="stamen-terrain",
-        title='Heatmap of Student Distribution'
+    # Get latitude and longitude for each postcode
+    postcode_counts[['latitude', 'longitude']] = postcode_counts['PostCodes'].apply(
+        lambda x: pd.Series(get_lat_lon(x))
     )
 
-    return fig
+    # Drop rows with missing coordinates
+    postcode_counts = postcode_counts.dropna(subset=['latitude', 'longitude'])
+
+    # Create a heat
