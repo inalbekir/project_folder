@@ -4,7 +4,7 @@ from charts import CHARTS
 
 def main():
     st.title("Student Data Visualization")
-    df = pd.read_csv('data/updated_coderminds.csv')
+    df = pd.read_csv('data/updated_coderminds.csv', on_bad_lines="skip")
 
     with st.sidebar:
         selected_chart = st.selectbox("Select a chart to display", options=list(CHARTS.keys()))
@@ -49,8 +49,7 @@ def main():
     else:
         fig = chart_function(df_filtered)
 
-    if fig:
-        st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True)
 
 if __name__ == "__main__":
     st.set_page_config(page_title="Student Data Visualization", layout='wide')

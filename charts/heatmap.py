@@ -7,7 +7,7 @@ def load_data(file_path):
     return pd.read_csv(file_path)
 
 def plot_student_heatmap(df):
-    df_coords = pd.read_csv('data/postcode_coordinates.csv')
+    df_coords = pd.read_csv('project_folder/data/postcode_coordinates.csv')
 
     # Ensure the correct columns are present
     expected_columns = ['postcode', 'latitude', 'longitude']
@@ -17,6 +17,10 @@ def plot_student_heatmap(df):
 
     # Merge coordinates with the main dataframe
     df = df.merge(df_coords, left_on='PostCodes', right_on='postcode', how='left')
+
+    # Debugging: Print the first few rows of the dataframe
+    st.write("Filtered DataFrame (first few rows):")
+    st.write(df.head())
 
     # Drop rows with missing coordinates
     df = df.dropna(subset=['latitude', 'longitude'])
@@ -31,4 +35,3 @@ def plot_student_heatmap(df):
                             mapbox_style="stamen-terrain")
 
     return fig
-

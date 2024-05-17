@@ -1,5 +1,6 @@
 import pandas as pd
 from geopy.geocoders import Nominatim
+import time
 
 def get_lat_lon(postcode):
     geolocator = Nominatim(user_agent="geoapiExercises")
@@ -13,19 +14,29 @@ def get_lat_lon(postcode):
 df_main = pd.read_csv('data/updated_coderminds.csv')
 
 # Extract unique postcodes
-unique_postcodes = df_main['PostCodes'].unique()
+postcodes = df_main['PostCodes'].unique()
 
-# Create a DataFrame to store coordinates
-df_coords = pd.DataFrame(columns=['postcode', 'latitude', 'longitude'])
+# Load existing coordinates
+df_coords = pd.read_csv('data/postcode_coordinates.csv')
 
-# Get coordinates for each postcode and append to df_coords using pd.concat
-coordinates = []
-for postcode in unique_postcodes:
+# Filter out postcodes already present in the coordinates file
+new_postcodes = set(postcodes) - set(df_coords['postcode'])
+
+# Get coordinates for new postcodes
+new_coords = []
+for postcode in new_postcodes:
     lat, lon = get_lat_lon(postcode)
-    coordinates.append({'postcode': postcode, 'latitude': lat, 'longitude': lon})
+    if lat and lon:
+        new_coords.append({'postcode': postcode, 'latitude': lat, 'longitude': lon})
+    time.sleep(1)  # To prevent being blocked by the geocoding service
 
-df_coords = pd.concat([df_coords, pd.DataFrame(coordinates)], ignore_index=True)
+# Convert to DataFrame
+df_new_coords = pd.DataFrame(new_coords)
 
-# Save the coordinates to a CSV file
+# Append new coordinates to existing ones
+df_coords = pd.concat([df_coords, df_new_coords])
+
+# Save updated coordinates
 df_coords.to_csv('data/postcode_coordinates.csv', index=False)
-print("postcode_coordinates.csv has been updated.")
+
+print("postcode_coordinates.csv has been updated and saved.")
