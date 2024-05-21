@@ -32,6 +32,7 @@ def main():
     df_filtered = df[df['Educational Year'].isin(selected_years)]
 
     chart_function = CHARTS[selected_chart]
+    fig = None  # Initialize fig to None
     if selected_chart == 'Preferred Language':
         fig = chart_function(df_filtered, selected_languages)
     elif selected_chart == 'Program Types':
@@ -43,13 +44,14 @@ def main():
     elif selected_chart == 'Income by Program and Year':
         fig = chart_function(df_filtered, selected_years, selected_programs)
     elif selected_chart == 'Student Heatmap':
-        fig = chart_function(df_filtered)
+        chart_function()  # This function does not return a figure
     elif selected_chart == 'How Did You Find Us' or selected_chart == 'Parent Occupation':
         fig = chart_function(df_filtered)
     else:
         fig = chart_function(df_filtered)
 
-    st.plotly_chart(fig, use_container_width=True)
+    if fig:
+        st.plotly_chart(fig, use_container_width=True)
 
 if __name__ == "__main__":
     st.set_page_config(page_title="Student Data Visualization", layout='wide')
