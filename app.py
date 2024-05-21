@@ -9,27 +9,32 @@ def main():
     with st.sidebar:
         selected_chart = st.selectbox("Select a chart to display", options=list(CHARTS.keys()))
 
-        # Universal filter: Educational Years
-        year_options = df['Educational Year'].unique().tolist()
-        selected_years = st.multiselect("Select Educational Years", options=year_options, default=year_options)
+        if selected_chart != 'Student Heatmap':  # Skip filters for the heatmap
+            # Universal filter: Educational Years
+            year_options = df['Educational Year'].unique().tolist()
+            selected_years = st.multiselect("Select Educational Years", options=year_options, default=year_options)
 
-        # Filters specific to each chart type
-        selected_languages = selected_programs = selected_periods = []
-        age_range = [df['Student Age'].min(), df['Student Age'].max()]
+            # Filters specific to each chart type
+            selected_languages = selected_programs = selected_periods = []
+            age_range = [df['Student Age'].min(), df['Student Age'].max()]
 
-        if selected_chart == 'Preferred Language':
-            language_options = df['Student Preferred Language'].unique().tolist()
-            selected_languages = st.multiselect('Select preferred languages', options=language_options, default=language_options)
-        elif selected_chart in ['Program Types', 'Students by Program and Period', 'Students by Program and Age', 'Income by Program and Year']:
-            program_options = df['Product Name'].unique().tolist()
-            selected_programs = st.multiselect('Select programs', options=program_options, default=program_options)
-        if selected_chart == 'Students by Program and Period':
-            period_options = df['Period'].unique().tolist()
-            selected_periods = st.multiselect('Select periods', options=period_options, default=period_options)
-        if selected_chart == 'Students by Program and Age':
-            age_range = st.slider('Select age range', min_value=int(df['Student Age'].min()), max_value=int(df['Student Age'].max()), value=(int(df['Student Age'].min()), int(df['Student Age'].max())))
+            if selected_chart == 'Preferred Language':
+                language_options = df['Student Preferred Language'].unique().tolist()
+                selected_languages = st.multiselect('Select preferred languages', options=language_options, default=language_options)
+            elif selected_chart in ['Program Types', 'Students by Program and Period', 'Students by Program and Age', 'Income by Program and Year']:
+                program_options = df['Product Name'].unique().tolist()
+                selected_programs = st.multiselect('Select programs', options=program_options, default=program_options)
+            if selected_chart == 'Students by Program and Period':
+                period_options = df['Period'].unique().tolist()
+                selected_periods = st.multiselect('Select periods', options=period_options, default=period_options)
+            if selected_chart == 'Students by Program and Age':
+                age_range = st.slider('Select age range', min_value=int(df['Student Age'].min()), max_value=int(df['Student Age'].max()), value=(int(df['Student Age'].min()), int(df['Student Age'].max())))
 
-    df_filtered = df[df['Educational Year'].isin(selected_years)]
+            df_filtered = df[df['Educational Year'].isin(selected_years)]
+        else:
+            df_filtered = df
+            selected_languages = selected_programs = selected_periods = []
+            age_range = [df['Student Age'].min(), df['Student Age'].max()]
 
     chart_function = CHARTS[selected_chart]
     fig = None  # Initialize fig to None
